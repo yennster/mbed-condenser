@@ -1,0 +1,28 @@
+{
+    "name": "mbed-condenser",
+    "version": "1.0.0",
+    "description": "Condense all of the forums, questions, and responses for anything mbed related",
+    "license": "Apache-2.0",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "engines": {
+        "node": "4.8.4"
+    },
+    "author": {
+        "name": "Michael Ray",
+        "email": "michael.ray@arm.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armmbed/mbed-condenser"
+    },
+    "dependencies": {
+        "feedparser": "^2.2.4",
+        "express": "^4.13.3",
+        "hbs": "~3.1.0",
+        "socket.io": "^1.4.5",
+        "bluebird": "^3.5.1"
+    }
+}

@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mbed Condenser</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+</head>
+<body class="arm-white">
+
+    <div class="container" id="content">
+
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody id="table-content">
+            </tbody>
+        </table>
+
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.js"></script>
+<script>
+    var socket = io();
+
+    socket.on('new-entry', function(data) {
+        var row = document.createElement("tr");
+
+        var typeCell = document.createElement("td");
+        var link = document.createElement("a");
+        link.appendChild(document.createTextNode(data.type));
+        link.href = data.link;
+        typeCell.appendChild(link);
+        row.appendChild(typeCell);
+
+        var dateCell = document.createElement("td");
+        dateCell.innerHTML = $.format.date(data.date, "MMM d, h:mma");
+        row.appendChild(dateCell);
+
+        var titleCell = document.createElement("td");
+        titleCell.innerHTML = data.title;
+        row.appendChild(titleCell);
+
+        var authorCell = document.createElement("td");
+        authorCell.innerHTML = data.author;
+        row.appendChild(authorCell);
+
+        var summaryCell = document.createElement("td");
+        summaryCell.innerHTML = data.summary;
+        row.appendChild(summaryCell);
+
+        var element = document.getElementById("table-content");
+        element.appendChild(row);
+    });
+
+</script>
+</body>
+</html>

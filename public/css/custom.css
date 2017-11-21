@@ -1,0 +1,44 @@
+body {
+    font-family: 'Open Sans';
+}
+
+.title {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    margin: auto;
+}
+
+button {
+    font-family: 'Open Sans';
+    text-transform: none;
+}
+
+h3 {
+    margin-bottom: 0 !important;
+}
+
+select {
+    margin-bottom: 0 !important;
+}
+
+.arm-orange:hover {
+    background-color: #F9BD31;
+    border-color: #F9BD31;
+    color: #ffffff;
+}
+
+.arm-white {
+    background-color: #fff;
+    color: #504F4D;
+}
+
+.arm-blue {
+    background-color: #128cab;
+    color: #ffffff;
+}
+
+.arm-orange {
+    background-color: #F59619;
+    color: #ffffff;
+    border-color: #F59619;
+}
