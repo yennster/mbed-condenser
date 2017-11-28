@@ -9,6 +9,8 @@ var Promise = require('bluebird');
 
 var port = 8080;
 
+var new_mbed_rss = false;
+
 // Create the express app
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -82,29 +84,52 @@ io.on('connection', function(socket) {
 
   Promise.map([
     'https://os.mbed.com/feeds/questions',
-    'https://os.mbed.com/feeds/allforums'
+    'https://os.mbed.com/feeds/allforums',
+    'https://stackoverflow.com/feeds/tag?tagnames=mbed&sort=newest'
   ], (url) => fetch(url), {concurrency: 4}) // note that concurrency limit
   .then((feeds) => {
+
     var unsortedList = [];
     feeds.forEach(function(feed) {
       feed.records.forEach(function(item) {
+
         var entry = {};
-        entry.type = (item.link.indexOf("https://os.mbed.com/forum") != -1) ? "forum" : ((item.link.indexOf("#answer") != -1) ? "answer" : "question");
+
+        entry.type = "none";
+        if (item.link.indexOf("https://os.mbed.com/forum") != -1) {
+          entry.type = "forum";
+        } else if (item.link.indexOf("#answer") != -1) {
+          entry.type = "answer";
+        } else if (item.link.indexOf("stackoverflow") != -1) {
+          entry.type = "stackoverflow";
+        } else {
+          entry.type = "question";
+        }
+
         entry.title = item.title;
         entry.date = Date.parse(item.date);
-        var author = item.summary;
-        author = author.substring(0,author.indexOf("</a></span>"));
-        author = author.substring(author.lastIndexOf(">")+2,author.length);
+
+        var author = item.author;
+        if (entry.type != "stackoverflow" && !new_mbed_rss) {
+          author = item.summary;
+          author = author.substring(0,author.indexOf("</a></span>"));
+          author = author.substring(author.lastIndexOf(">")+2,author.length);
+        }
         entry.author = author;
+
         var summary = item.summary;
-        if (entry.type!="forum") {
-          summary = summary.substring(summary.indexOf("</b>"));
-          summary = summary.substring(0, summary.indexOf("</p>"));
-        } else {
-          summary = summary.substring(summary.indexOf("wrote:")+6);
-          summary = summary.substring(0, summary.indexOf("<a href"));
+        if (entry.type != "stackoverflow" && !new_mbed_rss) {
+          if (entry.type != "forum") {
+            summary = summary.substring(summary.indexOf("</b>"));
+            summary = summary.substring(0, summary.indexOf("</p>"));
+          } else {
+            summary = summary.substring(summary.indexOf("wrote:")+6);
+            summary = summary.substring(0, summary.indexOf("<a href"));
+          }
+          summary = summary.replace(/<<code>>/g, '<code>');
         }
         entry.summary = summary.trim();
+
         entry.link = item.link;
         unsortedList.push(entry);
       });
